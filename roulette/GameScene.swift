@@ -65,6 +65,7 @@ class GameScene: SKScene {
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches{
+            sprite.physicsBody?.angularVelocity = 0
             /*Obtiene dos puntos para llamar a getVelocityVector con dos argumentos*/
            // print(touch.locationInNode(self))
         }
@@ -76,26 +77,26 @@ class GameScene: SKScene {
         let acceleration: CGVector = CGVectorMake(velocity.x * torqueMultiplicator, velocity.y * torqueMultiplicator)
         print(acceleration)
 
-      //  if (firstTouch.x <= self.frame.width/2){
+        if (firstTouch.x <= self.frame.width/2){
             //Si se aplica del lado izquierdo...
             if (velocity.y < 0){
                 //Si el swipe fue hacia arriba
-                sprite.physicsBody?.applyAngularImpulse(acceleration.dy)
+                sprite.physicsBody?.applyAngularImpulse(-0.01)
             }else{
-                sprite.physicsBody?.applyAngularImpulse(acceleration.dy)
+                sprite.physicsBody?.applyAngularImpulse(0.01)
 
-          //  }
+        }
             
-       /* }else if (firstTouch.x > self.frame.width/2){
+        }else if (firstTouch.x > self.frame.width/2){
             //Si el swipe fue del lado derecho...
                 if (velocity.y < 0){
                     //Si el swipe fue hacia arriba
-                    sprite.physicsBody?.applyTorque(velocity.y * torqueMultiplicator)
+                    sprite.physicsBody?.applyAngularImpulse(0.01)
                 }else{
-                    sprite.physicsBody?.applyTorque(-velocity.y * (-torqueMultiplicator))
+                    sprite.physicsBody?.applyAngularImpulse(-0.01)
                     
                 }
-           */
+           
           }
     }
 
