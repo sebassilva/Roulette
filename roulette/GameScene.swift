@@ -27,23 +27,25 @@ class GameScene: SKScene {
         sprite.yScale = 0.5
         sprite.position = location
         sprite.physicsBody = SKPhysicsBody(circleOfRadius: 4.0)
-        sprite.physicsBody!.affectedByGravity = false
+        sprite.physicsBody!.angularDamping = 0.1
+        sprite.physicsBody?.affectedByGravity = false
         sprite.physicsBody?.allowsRotation = true
         sprite.physicsBody?.angularVelocity = 1.0
         sprite.physicsBody?.mass = 10
         self.addChild(sprite)
         
     }
+    
+    
     var numberOfTouches = 1
     var p1: CGPoint = CGPointMake(0, 0)
     var p2: CGPoint = CGPointMake(0, 0)
+    
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
 
 
         for touch in touches {
-            
             switch numberOfTouches {
-                
             case 1:
                 numberOfTouches = 2
                 p1 = touch.locationInNode(self)
@@ -58,42 +60,51 @@ class GameScene: SKScene {
                 var velocity = getVelocityVector(p1, p2: p2)
                 applyTorqueWithParameters(velocity, firstTouch: touch.locationInNode(self))
             }
-            
-        //print(touch.locationInNode(self))
-
         }
     }
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches{
             /*Obtiene dos puntos para llamar a getVelocityVector con dos argumentos*/
-            print(touch.locationInNode(self))
+           // print(touch.locationInNode(self))
         }
     }
 
     
     func applyTorqueWithParameters(velocity: CGPoint, firstTouch: CGPoint){
-        let torqueMultiplicator: CGFloat = 0.01
-        print("")
-        if (firstTouch.x <= self.frame.width/2){
+        let torqueMultiplicator: CGFloat = 0.0001
+        let acceleration: CGVector = CGVectorMake(velocity.x * torqueMultiplicator, velocity.y * torqueMultiplicator)
+        print(acceleration)
+
+      //  if (firstTouch.x <= self.frame.width/2){
             //Si se aplica del lado izquierdo...
             if (velocity.y < 0){
-                //Si el swipe fue hacia abajo
-                sprite.physicsBody?.applyTorque(-velocity.y * (-torqueMultiplicator))
+                //Si el swipe fue hacia arriba
+                sprite.physicsBody?.applyAngularImpulse(acceleration.dy)
             }else{
-                sprite.physicsBody?.applyTorque(velocity.y * torqueMultiplicator)
+                sprite.physicsBody?.applyAngularImpulse(acceleration.dy)
 
-            }
-        }
+          //  }
+            
+       /* }else if (firstTouch.x > self.frame.width/2){
+            //Si el swipe fue del lado derecho...
+                if (velocity.y < 0){
+                    //Si el swipe fue hacia arriba
+                    sprite.physicsBody?.applyTorque(velocity.y * torqueMultiplicator)
+                }else{
+                    sprite.physicsBody?.applyTorque(-velocity.y * (-torqueMultiplicator))
+                    
+                }
+           */
+          }
     }
+
     
     
     func getVelocityVector(p1: CGPoint, p2: CGPoint) -> CGPoint{
-        //print("ENTRA A FUNCION VELOCIDAD. p1 = \(p1) y p2 = \(p2)")
         var velocity = CGPointMake(0, 0)
         velocity.x = p1.x - p2.x
         velocity.y = p1.y - p2.y
-        //print ("VECTOR VELOCIDAD: \(velocity)")
         return velocity
     }
    
